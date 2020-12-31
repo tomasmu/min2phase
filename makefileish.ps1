@@ -19,9 +19,7 @@ $SRC = @(
 	'src/Tools.java'
 )
 $MAINPROG = 'example/MainProgram.java'
-$TESTSRC  = 'test/test.java'
 $DIST     = 'dist/twophase.jar'
-$DISTTEST = 'dist/test.class'
 
 switch ($Action) {
 	'Build' {
