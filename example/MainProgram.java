@@ -54,25 +54,6 @@ public class MainProgram extends javax.swing.JFrame {
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public static void main(String[] args) {
-        if (args.length >= 2) {
-            String[] scrambleArray = Arrays.copyOfRange(args, 1, args.length);
-            String scrambleString = String.join(" ", scrambleArray);
-            String scrambledCube = Tools.fromScramble(scrambleString);
-
-            if (args[0].equals("--optimal")) {
-                int maxDepth = 20;
-                long probeMax = 100000000;  //is this a good value?
-                long probeMin = 0;
-                int verbose = Search.OPTIMAL_SOLUTION | Search.APPEND_LENGTH; //doesn't show * when optimal
-                Search searcher = new Search();
-                String result = searcher.solution(scrambledCube, maxDepth, probeMax, probeMin, verbose);
-
-                System.out.println(result);
-            }
-
-            return;
-        }
-
         String fileName = "m2p" + (Search.USE_TWIST_FLIP_PRUN ? "T" : "") + ".data";
         try {
             DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(fileName)));
@@ -92,6 +73,22 @@ public class MainProgram extends javax.swing.JFrame {
                 e.printStackTrace();
                 System.exit(1);
             }
+        }
+
+        if (args.length >= 1) {
+            String scrambleString = String.join(" ", args);
+            String scrambledCube = Tools.fromScramble(scrambleString);
+
+            int maxDepth = 20;
+            long probeMax = 100000000;  //todo: is this a good value?
+            long probeMin = 0;
+            int verbose = Search.OPTIMAL_SOLUTION | Search.APPEND_LENGTH; //doesn't show * when optimal
+            Search searcher = new Search();
+
+            String result = searcher.solution(scrambledCube, maxDepth, probeMax, probeMin, verbose);
+
+            System.out.println(result);
+            return;
         }
 
         SwingUtilities.invokeLater(new Runnable() {
