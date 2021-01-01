@@ -23,19 +23,20 @@ $DIST     = 'dist/twophase.jar'
 
 switch ($Action) {
 	'Build' {
-		Write-Host "* $_"
+		Write-Host "* $_`ing"
 		javac.exe -d 'dist' $SRC $MAINPROG -Xlint:all
-		Copy-Item -Force -Path $SRC -Destination 'dist/cs/min2phase'
-		cd 'dist'
+		Copy-Item -Path $SRC -Destination 'dist/cs/min2phase' -Force
+		Push-Location
+		Set-Location 'dist'
 		jar.exe cfe 'twophase.jar' 'ui.MainProgram' 'ui/*.class' 'cs/min2phase/*.class' 'cs/min2phase/*.java'
-		cd ..
+		Pop-Location
 	}
 	'Run' {
-		Write-Host "* $_"
+		Write-Host "* $_`ning"
 		java.exe -jar $DIST
 	}
 	'Clean' {
-		Write-Host "* $_"
+		Write-Host "* $_`ing"
 		Remove-Item -Recurse dist -ErrorAction SilentlyContinue
 	}
 }
