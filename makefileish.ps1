@@ -1,15 +1,30 @@
-#because i have no idea what i'm doing, i rewrote parts of Makefile to powershell
+<#
+.SYNOPSIS
 
+Simplified powershell version of Makefile.
+(because i have no idea what i'm doing)
+
+.DESCRIPTION
+
+Can perform some things that Makefile can; Build, Run, and Clean.
+
+.EXAMPLE
+
+.\makefileish.ps1 clean, build
+
+.EXAMPLE
+
+.\makefileish.ps1 run "R U2 R' U' R U' R'"
+#>
 [CmdletBinding()]
 param(
 	[parameter(Mandatory, Position = 0)]
-	[ValidateSet('All', 'Build', 'Run', 'Clean')]
-	[string[]]$Action
-)
+	[ValidateSet('Build', 'Run', 'Clean')]
+	[string[]]$Action,
 
-if ('All' -eq $Action) {
-	$Action = 'Clean', 'Build', 'Run'
-}
+	[parameter(Position = 1)]
+	[string[]]$ArgumentList
+)
 
 $SRC = @(
 	'src/CoordCube.java'
@@ -23,20 +38,21 @@ $DIST     = 'dist/twophase.jar'
 
 switch ($Action) {
 	'Build' {
-		Write-Host "* $_`ing"
+		Write-Host "* $($_)ing"
 		javac.exe -d 'dist' $SRC $MAINPROG -Xlint:all
 		Copy-Item -Path $SRC -Destination 'dist/cs/min2phase' -Force
+
 		Push-Location
 		Set-Location 'dist'
 		jar.exe cfe 'twophase.jar' 'ui.MainProgram' 'ui/*.class' 'cs/min2phase/*.class' 'cs/min2phase/*.java'
 		Pop-Location
 	}
 	'Run' {
-		Write-Host "* $_`ning"
-		java.exe -jar $DIST
+		Write-Host "* $($_)ning"
+		java.exe -jar $DIST $ArgumentList
 	}
 	'Clean' {
-		Write-Host "* $_`ing"
+		Write-Host "* $($_)ing"
 		Remove-Item -Recurse dist -ErrorAction SilentlyContinue
 	}
 }
